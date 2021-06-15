@@ -1,0 +1,46 @@
+version: '3.3'
+
+services:
+  nginx:
+    build: ./nginx
+    volumes:
+      - static_volume:/usr/src/backend_ta_eos/backend_ta_eos/static
+      - static_volume:/usr/src/backend_ta_eos/backend_ta_eos/media_root
+    ports:
+      - 127.0.0.1:9090:80
+    depends_on:
+      - web
+    restart: on-failure
+
+  web:
+    build:
+      context: .
+      dockerfile: ./backend_ta_eos_django/Dockerfile.prod
+    command: gunicorn backend_ta_eos.wsgi --bind 0.0.0.0:8000 --worker-connections=1000 --workers=3
+    volumes:
+      - static_volume:/usr/src/backend_ta_eos/static
+      - static_volume:/usr/src/backend_ta_eos/media_root
+    env_file:
+      - envs/.env.prod
+    depends_on:
+      - db
+    restart: on-failure
+
+  db:
+    image: postgres:12.0-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - envs/.env.prod.db
+    restart: on-failure
+
+  node_exporter:
+    image: prom/node-exporter
+    ports:
+      - 127.0.0.1:9100:9100
+    restart: always
+
+volumes:
+  postgres_data:
+  static_volume:
+  frontend_volume:

@@ -1,0 +1,39 @@
+# pull official base image
+FROM python:3.8.0-alpine
+
+# set work directory
+WORKDIR /usr/src/backend_ta_eos
+
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# install Pillow dependencies
+RUN apk add --no-cache jpeg-dev zlib-dev
+RUN apk add --no-cache --virtual .build-deps build-base linux-headers
+
+# install psycopg2 dependencies
+RUN apk update \
+    && apk add postgresql-dev gcc python3-dev musl-dev
+
+# install cryptography dependencies
+RUN apk update \
+    && apk add gcc musl-dev libffi-dev openssl-dev python3-dev
+
+# install dependencies
+RUN pip install --upgrade pip
+COPY ./backend_ta_eos_django/requirements/production.txt /usr/src/backend_ta_eos/requirements.txt
+RUN pip install -r requirements.txt
+
+# copy entrypoint.sh
+COPY ./backend_ta_eos_django/_entrypoints/entrypoint.sh /usr/src/backend_ta_eos/_entrypoints/entrypoint.prod.sh
+
+# copy project
+COPY ./backend_ta_eos_django /usr/src/backend_ta_eos/
+
+# create media and static folders
+RUN mkdir -p /usr/src/backend_ta_eos/mediafiles
+RUN mkdir -p /usr/src/backend_ta_eos/staticfiles
+
+RUN ["chmod", "+x", "/usr/src/backend_ta_eos/_entrypoints/entrypoint.prod.sh"]
+ENTRYPOINT ["/usr/src/backend_ta_eos/_entrypoints/entrypoint.prod.sh"]
