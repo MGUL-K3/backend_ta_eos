@@ -53,9 +53,7 @@ class LoginView(views.APIView):
             if user.is_active:
                 login(self.request, user)
                 serializer = UserSerializer(user)
-                return Response(
-                    data=serializer.data, status=status.HTTP_200_OK
-                )
+                return Response(data=serializer.data, status=status.HTTP_200_OK)
             else:
                 return Response(status=status.HTTP_404_NOT_FOUND)
         else:
