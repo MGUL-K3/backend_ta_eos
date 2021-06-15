@@ -7,10 +7,10 @@ from .models import User
 from .serializers import UserSerializer
 
 
-class UserCreateView(generics.CreateAPIView, generics.RetrieveAPIView):
+class UserCreateView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = [AllowAny]
 
     def post(self, *args, **kwargs):
         answer = self.create(self.request, *args, **kwargs)
@@ -38,23 +38,23 @@ class UserCreateView(generics.CreateAPIView, generics.RetrieveAPIView):
 
 
 class LoginView(views.APIView):
+    permission_classes = [AllowAny]
+
     def post(self, *args, **kwargs):
         data = self.request.data
 
         email = data.get(
             "email",
         )
+
         password = data.get(
             "password",
         )
         user = authenticate(username=email, password=password)
 
-        if user is not None:
-            if user.is_active:
-                login(self.request, user)
-                serializer = UserSerializer(user)
-                return Response(data=serializer.data, status=status.HTTP_200_OK)
-            else:
-                return Response(status=status.HTTP_404_NOT_FOUND)
-        else:
+        if user is None or not user.is_active:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+        login(self.request, user)
+        serializer = UserSerializer(user)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)

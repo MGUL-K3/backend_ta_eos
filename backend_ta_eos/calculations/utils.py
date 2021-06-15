@@ -1,5 +1,6 @@
 # TODO refactor to classes
 
+
 def string_to_int(string: str) -> int:
     return int("0b" + string, 2)
 
