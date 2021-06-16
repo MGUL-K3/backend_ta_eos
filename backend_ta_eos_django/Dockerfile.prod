@@ -26,7 +26,7 @@ COPY ./backend_ta_eos_django/requirements/production.txt /usr/src/backend_ta_eos
 RUN pip install -r requirements.txt
 
 # copy entrypoint.sh
-COPY ./backend_ta_eos_django/_entrypoints/entrypoint.sh /usr/src/backend_ta_eos/_entrypoints/entrypoint.prod.sh
+COPY ./backend_ta_eos_django/_entrypoints/entrypoint.sh /usr/src/backend_ta_eos/_entrypoints/entrypoint.sh
 
 # copy project
 COPY ./backend_ta_eos_django /usr/src/backend_ta_eos/
@@ -35,5 +35,5 @@ COPY ./backend_ta_eos_django /usr/src/backend_ta_eos/
 RUN mkdir -p /usr/src/backend_ta_eos/mediafiles
 RUN mkdir -p /usr/src/backend_ta_eos/staticfiles
 
-RUN ["chmod", "+x", "/usr/src/backend_ta_eos/_entrypoints/entrypoint.prod.sh"]
-ENTRYPOINT ["/usr/src/backend_ta_eos/_entrypoints/entrypoint.prod.sh"]
+RUN ["chmod", "+x", "/usr/src/backend_ta_eos/_entrypoints/entrypoint.sh"]
+ENTRYPOINT ["/usr/src/backend_ta_eos/_entrypoints/entrypoint.sh"]
