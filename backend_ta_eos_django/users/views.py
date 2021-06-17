@@ -1,6 +1,6 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from rest_framework import generics, status, views
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from .models import User
@@ -58,3 +58,11 @@ class LoginView(views.APIView):
         login(self.request, user)
         serializer = UserSerializer(user)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
+class LogoutView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        return Response(status=status.HTTP_200_OK)
