@@ -4,8 +4,8 @@ from rest_framework import serializers
 
 
 def bin_value_validator(value: str):
-    if re.search(r"[^01]+", value):
-        raise serializers.ValidationError("Value is invalid")
+    if re.search(r"[^01]+|^0.+", value):
+        raise serializers.ValidationError("Value format is invalid")
 
 
 class CalculationSerializer(serializers.Serializer):
