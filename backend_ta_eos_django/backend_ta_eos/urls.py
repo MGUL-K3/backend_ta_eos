@@ -13,4 +13,8 @@ urlpatterns = [
         "api/v1/calculations/direct_code/left_shift/",
         calculations_views.DirectCodeLeftShiftCalculation.as_view(),
     ),
+    path(
+        "api/v1/calculations/direct_code/right_shift/",
+        calculations_views.DirectCodeRightShiftCalculation.as_view(),
+    ),
 ]

@@ -1,4 +1,4 @@
-# TODO refactor to classes
+# TODO Refactor
 
 
 def string_to_int(string: str) -> int:
@@ -28,6 +28,15 @@ def generate_seq_of_objects(f_value: str, s_value: str):
     seq = []
     for bin_dec, index in zip(reversed(s_value), range(len(s_value))):
         seq += [generate_obj(f_value, bin_dec, index)]
+
+    seq += [generate_final_obj(f_value, s_value)]
+    return seq
+
+
+def generate_seq_of_objects_r(f_value: str, s_value: str):
+    seq = []
+    for bin_dec, index in zip(s_value, range(1, len(s_value) + 1)):
+        seq += [generate_obj("0" * index + f_value, bin_dec, index)]
 
     seq += [generate_final_obj(f_value, s_value)]
     return seq
